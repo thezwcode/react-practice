@@ -1,25 +1,26 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import classes from './Comments.module.css';
+import CommentsList from './CommentsList';
 import NewCommentForm from './NewCommentForm';
 
-const Comments = () => {
+const Comments = (props) => {
   const [isAddingComment, setIsAddingComment] = useState(false);
-
-  const startAddCommentHandler = () => {
+  const addCommentHandler = useCallback(() => {
     setIsAddingComment(true);
-  };
+  }, []);
+
+  const commentAddedHandler = useCallback(() => {
+    setIsAddingComment(false);
+  }, [])
+  
   
   return (
     <section className={classes.comments}>
       <h2>User Comments</h2>
-      {!isAddingComment && (
-        <button className='btn' onClick={startAddCommentHandler}>
-          Add a Comment
-        </button>
-      )}
-      {isAddingComment && <NewCommentForm />}
+      <NewCommentForm quoteId={props.quoteId} onCommentAdded={commentAddedHandler} onAddComment={addCommentHandler}/>
       <p>Comments...</p>
+      <CommentsList isAddingComment={isAddingComment} quoteId={props.quoteId}/>
     </section>
   );
 };

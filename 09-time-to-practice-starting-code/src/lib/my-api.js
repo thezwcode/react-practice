@@ -44,3 +44,36 @@ export async function getSingleQuote(quoteId) {
   const loadedQuote = { id: quoteId, ...data };
   return loadedQuote;
 }
+
+export async function getAllComments(quoteId) {
+  const response = await fetch(
+    `${FIREBASE_DOMAIN}/quotes/${quoteId}/comments.json`
+  );
+  const data = await response.json();
+  if (!response.ok) {
+    throw Error(data.message || "Could not get comments for this quote.");
+  }
+  const loadedComments = { ...data };
+  return loadedComments;
+}
+
+export async function addComment(commentData) {
+  console.log(commentData);
+  const response = await fetch(
+    `${FIREBASE_DOMAIN}/quotes/${commentData.quoteId}/comments.json`,
+    {
+      method: "POST",
+      body: JSON.stringify(commentData.comment),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw Error(data.message || "Could not add comment.");
+  }
+
+  return null;
+}

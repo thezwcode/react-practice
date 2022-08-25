@@ -21,7 +21,7 @@ const httpReducer = (state, action) => {
 
 
 
-const useHttp = (requestFunction, startWithPending=false) => {
+export const useHttp = (requestFunction, startWithPending=false) => {
     const [httpState, dispatch] = useReducer(httpReducer, {status: startWithPending ? 'pending' : null, data: null, error: null}) 
      const sendRequest = useCallback(
        async (requestData) => {
