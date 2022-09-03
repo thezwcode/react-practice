@@ -1,14 +1,12 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useEffect } from "react";
 import { accountSignIn, accountSignUp } from "../../api/auth-api";
 import useHttp from "../../hooks/use-http";
-import AuthContext from "../../store/auth-context";
 
 import classes from "./AuthForm.module.css";
 
-const AuthForm = () => {
+const AuthForm = (props) => {
+  const { onAuthentication } = props;
   const [isLogin, setIsLogin] = useState(true);
-  const authCtx = useContext(AuthContext);
-
   const {
     sendRequest,
     status,
@@ -34,13 +32,15 @@ const AuthForm = () => {
     });
   };
 
-  if (status === "completed" && !error) {
-    authCtx.login(response.idToken);
-  }
+  useEffect(() => {
+    if (status === "completed" && !error) {
+      onAuthentication(response.idToken, response.expiresIn);
+    }
+  }, [onAuthentication, status, error, response]);
 
   return (
     <section className={classes.auth}>
-      {error && <div className="centered">{error}</div>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <h1>{isLogin ? "Login" : "Sign Up"}</h1>
       <form onSubmit={submitFormHandler}>
         <div className={classes.control}>

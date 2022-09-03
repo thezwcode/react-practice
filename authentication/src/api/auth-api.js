@@ -1,10 +1,9 @@
-import { useContext } from "react";
-
 const API_KEY = "AIzaSyCvb_YJ363vUMA6JvkpHJ9-KjX2I-pixbE";
-export const SIGNUP_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
-export const SIGNIN_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`;
+const SIGNUP_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
+const SIGNIN_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`;
+const CHANGE_PASSWORD_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${API_KEY}`;
 
-let authFailedMessage = "Authentication failed!";
+//let authFailedMessage = "Authentication failed!";
 
 export const accountSignUp = async (requestData) => {
   const { emailData, passwordData, getToken } = requestData;
@@ -22,31 +21,19 @@ export const accountSignUp = async (requestData) => {
 
   const data = await response.json();
 
-  if (!response.ok) {
-    alert("Connection failed!");
-    return;
-  }
-  console.log(data);
-
   if (data.error && data.error.message) {
-    if (
-      data.error.code === 400 &&
-      data.error.message.startsWith("WEAK_PASSWORD" || "INVALID_PASSWORD")
-    ) {
-      authFailedMessage = "Enter proper password";
-    }
-    alert(authFailedMessage);
-    //throw new Error(data.error.message);
+    //authFailedMessage = data.error.message;
+
+    //alert(authFailedMessage);
+    throw new Error(data.error.message);
   }
 
   return data;
 };
 
-export const accountSignIn = async (
-  emailData,
-  passwordData,
-  getToken = true
-) => {
+export const accountSignIn = async (requestData) => {
+  const { emailData, passwordData, getToken } = requestData;
+
   const response = await fetch(SIGNIN_ENDPOINT, {
     method: "POST",
     body: JSON.stringify({
@@ -59,19 +46,34 @@ export const accountSignIn = async (
 
   const data = await response.json();
 
-  if (!response.ok) {
-    alert("Sign up failed!");
-    return;
+  if (data.error && data.error.message) {
+    //authFailedMessage = data.error.message;
+
+    //alert(authFailedMessage);
+    throw new Error(data.error.message);
   }
   console.log(data);
+  return data;
+};
+
+export const changePassword = async (requestData) => {
+  console.log("change password request sending!");
+  console.log(requestData);
+  const { token, newPassword } = requestData;
+  const response = await fetch(CHANGE_PASSWORD_ENDPOINT, {
+    method: "POST",
+    body: JSON.stringify({
+      idToken: token,
+      password: newPassword,
+      returnSecureToken: true,
+    }),
+    headers: { "Content-Type": "application.json" },
+  });
+
+  const data = await response.json();
 
   if (data.error && data.error.message) {
-    if (data.error.code === 400 && data.error.message === "EMAIL_NOT_FOUND") {
-      authFailedMessage = "Invalid email";
-    }
-    alert(authFailedMessage);
-    //throw new Error(data.error.message);
+    throw new Error(data.error.message);
   }
-
-  return data;
+  return null;
 };

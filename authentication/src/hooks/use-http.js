@@ -13,14 +13,14 @@ const httpReducer = (state, action) => {
     return {
       status: "completed",
       error: null,
-      data: action.data,
+      data: action.responseData,
     };
   }
 
   if (action.type === "ERROR") {
     return {
       status: "completed",
-      error: action.data.error,
+      error: action.errorMessage,
       data: null,
     };
   }
@@ -42,7 +42,10 @@ const useHttp = (requestFunction, startWithPending = true) => {
         const responseData = await requestFunction(requestData);
         dispatch({ type: "SUCCESS", responseData });
       } catch (error) {
-        dispatch({ type: "ERROR", errorMessage: error.message });
+        dispatch({
+          type: "ERROR",
+          errorMessage: error.message || "something went wrong",
+        });
       }
     },
     [requestFunction]

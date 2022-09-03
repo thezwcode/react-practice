@@ -26,6 +26,11 @@ function App() {
             <UserProfile />
           </Route>
         )}
+        {!authCtx.isLoggedIn && (
+          <Route path="/*">
+            <Redirect to="/auth" />
+          </Route>
+        )}
       </Switch>
     </Layout>
   );
