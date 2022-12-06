@@ -9,15 +9,15 @@ import useHttp from '../../hooks/use-http';
 import LoadingSpinner from '../UI/LoadingSpinner';
 
 const CommentsList = (props) => {
-  const {quoteId} = props;
+  const {quoteId, isAddingComment} = props;
   const {sendRequest, status, error, data:loadedComments} = useHttp(getAllComments, true);
   let showComments = true;
 
   useEffect(() => {
     sendRequest(quoteId);
-  }, [sendRequest, quoteId]);
+  }, [sendRequest, quoteId, isAddingComment]);
 
-  if(status==='pending') {
+  if(status==='pending' || isAddingComment) {
     return <div className='centered'><LoadingSpinner/></div>
   }
 
@@ -25,6 +25,7 @@ const CommentsList = (props) => {
     return <p className='centered'>{error}</p>
   }
 
+  console.log(loadedComments);
   if (!loadedComments || loadedComments.length === 0) {
     showComments = false;
   }

@@ -34,7 +34,7 @@ const AuthForm = (props) => {
 
   useEffect(() => {
     if (status === "completed" && !error) {
-      onAuthentication(response.idToken, response.expiresIn);
+      onAuthentication(response.idToken, response.expiresIn, response.refreshToken);
     }
   }, [onAuthentication, status, error, response]);
 

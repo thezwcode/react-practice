@@ -2,6 +2,7 @@ const API_KEY = "AIzaSyCvb_YJ363vUMA6JvkpHJ9-KjX2I-pixbE";
 const SIGNUP_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
 const SIGNIN_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`;
 const CHANGE_PASSWORD_ENDPOINT = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${API_KEY}`;
+const REFRESH_TOKEN_ENDPOINT = `https://securetoken.googleapis.com/v1/token?key=${API_KEY}`;
 
 //let authFailedMessage = "Authentication failed!";
 
@@ -22,9 +23,6 @@ export const accountSignUp = async (requestData) => {
   const data = await response.json();
 
   if (data.error && data.error.message) {
-    //authFailedMessage = data.error.message;
-
-    //alert(authFailedMessage);
     throw new Error(data.error.message);
   }
 
@@ -47,9 +45,6 @@ export const accountSignIn = async (requestData) => {
   const data = await response.json();
 
   if (data.error && data.error.message) {
-    //authFailedMessage = data.error.message;
-
-    //alert(authFailedMessage);
     throw new Error(data.error.message);
   }
   console.log(data);
@@ -57,8 +52,6 @@ export const accountSignIn = async (requestData) => {
 };
 
 export const changePassword = async (requestData) => {
-  console.log("change password request sending!");
-  console.log(requestData);
   const { token, newPassword } = requestData;
   const response = await fetch(CHANGE_PASSWORD_ENDPOINT, {
     method: "POST",
@@ -76,4 +69,19 @@ export const changePassword = async (requestData) => {
     throw new Error(data.error.message);
   }
   return null;
+};
+
+export const refreshAuthentication = async (requestData) => {
+  const response = await fetch(REFRESH_TOKEN_ENDPOINT, {
+    method: "POST",
+    body: `grant_type=refresh_token&refresh_token=${requestData.refreshToken}`,
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  });
+  const data = await response.json();
+
+  if (data.error && data.error.message) {
+    throw new Error(data.error.message);
+  }
+
+  return data;
 };

@@ -8,11 +8,10 @@ const AuthPage = () => {
   const authCtx = useContext(AuthContext);
   const history = useHistory();
 
-  const authenticatedHandler = (token, expiresIn) => {
-    authCtx.login(token);
+  const authenticatedHandler = (token, expiresIn, refreshToken) => {
+    console.log("wait 10s");
+    authCtx.login(token, "10", refreshToken);
     history.replace("/");
-    const expiryTime = new Date() + expiresIn;
-    setTimeout(()=>authCtx.logout(), expiresIn);
   };
 
   return <AuthForm onAuthentication={authenticatedHandler} />;

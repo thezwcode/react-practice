@@ -11,7 +11,7 @@ const NewCommentForm = (props) => {
 
   const submitFormHandler = (event) => {
     event.preventDefault();
-    sendRequest({quoteId: quoteId, comment: commentTextRef.current.value})
+    sendRequest({quoteId: quoteId, comment: {text: commentTextRef.current.value}})
     onAddComment();
     // optional: Could validate here
 
@@ -21,6 +21,7 @@ const NewCommentForm = (props) => {
   useEffect(() => {
     if (status==='completed') {
       onCommentAdded();
+      commentTextRef.current.value='';
     }
   }, [status, onCommentAdded]);
 

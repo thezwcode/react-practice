@@ -8,6 +8,7 @@ import { AuthContextProvider } from "./store/auth-context";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <AuthContextProvider>
+    <div id="modal-overlay" />
     <BrowserRouter>
       <App />
     </BrowserRouter>

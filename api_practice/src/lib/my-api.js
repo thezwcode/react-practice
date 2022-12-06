@@ -53,12 +53,16 @@ export async function getAllComments(quoteId) {
   if (!response.ok) {
     throw Error(data.message || "Could not get comments for this quote.");
   }
-  const loadedComments = { ...data };
-  return loadedComments;
+
+  const transformedComments = [];
+  for (const key in data) {
+    const commentObj = { id: key, ...data[key] };
+    transformedComments.push(commentObj);
+  }
+  return transformedComments;
 }
 
 export async function addComment(commentData) {
-  console.log(commentData);
   const response = await fetch(
     `${FIREBASE_DOMAIN}/quotes/${commentData.quoteId}/comments.json`,
     {
